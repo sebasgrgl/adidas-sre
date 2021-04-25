@@ -49,21 +49,21 @@ node{
    //     }
    //   }
    // }
-   stage ('Initialize') {
+  tools {
+        maven 'maven'
+        jdk 'jdk11'
+  }
+  stage ('Initialize') {
     sh '''
     echo "PATH = ${PATH}"
     mvn --version
     '''
   }
   stage('Build Package') {
-    withEnv( ["PATH+MAVEN=${tool mvn_version}/bin"] ){
-      sh("mvn -B -DskipTests clean package -U")
-    }
+    sh("mvn -B -DskipTests clean package -U")
   }
   stage('Test Package') {
-    withEnv( ["PATH+MAVEN=${tool mvn_version}/bin"] ){
-      sh("mvn test")
-    }
+    sh("mvn test")
   }
   //Stage 1 : Build the docker imagetag.
   stage("Build Docker Image") {
