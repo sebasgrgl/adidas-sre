@@ -49,10 +49,10 @@ node{
    //     }
    //   }
    // }
-  tools {
-        maven 'maven'
-        jdk 'jdk11'
-  }
+  // tools {
+  //       maven 'maven'
+  //       jdk 'jdk11'
+  // }
   stage ('Initialize') {
     sh '''
     echo "PATH = ${PATH}"
