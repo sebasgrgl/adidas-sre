@@ -58,8 +58,6 @@ pipeline {
         sh("mvn test")
       }
     }
-  }
-
     stage("Build Docker Image") {
       when {
         anyOf {
@@ -75,6 +73,9 @@ pipeline {
         sh("docker push ${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}:${DOCKER_TAG}")
       }
     }
+  }
+
+
 
   //   stage('Make Container') {
   //     steps {
