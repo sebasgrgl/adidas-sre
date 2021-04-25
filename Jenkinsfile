@@ -91,7 +91,7 @@ pipeline {
 
           // Change context
           sh ("gcloud container clusters get-credentials ${CLUSTER_NAME} --zone us-east1-d --project ${PROJECT_ID}")
-          sh ("kubectl config use-context ${CLUSTER_NAME}")
+          sh ("kubectl config use-context gke_${PROJECT_ID}_us-east1-d_${CLUSTER_NAME}")
 
           // change image
           sh("")
