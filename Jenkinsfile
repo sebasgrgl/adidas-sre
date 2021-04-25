@@ -54,12 +54,14 @@ node{
     '''
   }
   stage('Build Package') {
-    withEnv( ["PATH+MAVEN=${tool mvn_version}/bin"] )
-    sh("'/usr/local/bin/mvn' -B -DskipTests clean package -U")
+    withEnv( ["PATH+MAVEN=${tool mvn_version}/bin"] ){
+      sh("'/usr/local/bin/mvn' -B -DskipTests clean package -U")
+    }
   }
   stage('Test Package') {
-    withEnv( ["PATH+MAVEN=${tool mvn_version}/bin"] )
-    sh("/usr/local/bin/mvn' test")
+    withEnv( ["PATH+MAVEN=${tool mvn_version}/bin"] ){
+      sh("/usr/local/bin/mvn' test")
+    }
   }
   //Stage 1 : Build the docker imagetag.
   stage("Build Docker Image") {
