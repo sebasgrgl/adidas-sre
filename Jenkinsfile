@@ -6,8 +6,8 @@ node{
   def imageVersion = 'production'
   def namespace = 'production'
   def imageTag = "gcr.io/${project}/${appName}:${imageVersion}.${env.BUILD_NUMBER}"
-  def mvn_version = 'M3'
-  def jdk_version = 'jdk11'
+  def mvn_version = tool 'maven'
+  def jdk_version = tool 'jdk11'
 
    // stage('Set Environment Variables') {
    //   steps {
@@ -56,13 +56,13 @@ node{
     '''
   }
   stage('Build Package') {
-    withEnv( ["PATH+MAVEN=${tool mvn_version}/bin","PATH+JDK=${tool jdk_version}/bin"] ){
-      sh("mvn -B -DskipTests clean package -U")
+    withEnv( ["PATH+MAVEN=${tool mvn_version}/bin"] ){
+      sh("'${mvn_version}/bin/mvn' -B -DskipTests clean package -U")
     }
   }
   stage('Test Package') {
-    withEnv( ["PATH+MAVEN=${tool mvn_version}/bin","PATH+JDK=${tool jdk_version}/bin"] ){
-      sh("mvn test")
+    withEnv( ["PATH+MAVEN=${tool mvn_version}/bin"] ){
+      sh("'${mvn_version}/bin/mvn' test")
     }
   }
   //Stage 1 : Build the docker imagetag.
