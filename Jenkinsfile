@@ -60,7 +60,7 @@ node{
     '''
   }
   stage('Build Package') {
-    sh("mvn -B -DskipTests clean package -U")
+    sh("mvn clean package")
   }
   stage('Test Package') {
     sh("mvn test")
