@@ -3,47 +3,49 @@ node{
   def project = 'adidas-sre-311717'
   def appName = 'adidas-sre'
   def serviceName = "${appName}-backend"
-
-   stage('Set Environment Variables') {
-     steps {
-       script {
-         echo "JOB_NAME = ${JOB_NAME}"
-         echo "BUILD_NUMBER = ${BUILD_NUMBER}"
-         echo "BUILD_URL = ${BUILD_URL}"
-         echo "GIT_URL = ${GIT_URL}"
-         echo "BRANCH_NAME = ${BRANCH_NAME}"
-
-         switch(BRANCH_NAME) {
-           case "production":
-             env.DOCKER_TAG = "prod"
-             env.PROJECT_ID = 'adidas-sre-311717'
-             env.CLUSTER_NAME = 'production'
-             break
-           case "staging":
-             env.DOCKER_TAG = "stg"
-             env.PROJECT_ID = 'adidas-sre-311717'
-             env.CLUSTER_NAME = 'staging'
-             break
-           default:
-             env.DOCKER_TAG = "dev"
-             env.PROJECT_ID = 'adidas-sre-311717'
-             env.CLUSTER_NAME = 'development'
-             break
-         }
-         env.NAMESPACE = "default"
-         env.DOCKER_IMAGE_NAME = "adidas-sre"
-         env.DOCKER_REGISTRY = "us.gcr.io/${PROJECT_ID}"
-
-         //Print environment variables
-         echo "DOCKER_TAG = ${DOCKER_TAG}"
-         echo "PROJECT_ID = ${PROJECT_ID}"
-         echo "CLUSTER_NAME = ${CLUSTER_NAME}"
-         echo "NAMESPACE = ${NAMESPACE}"
-         echo "DOCKER_REGISTRY = ${DOCKER_REGISTRY}"
-         echo "DOCKER_IMAGE_NAME = ${DOCKER_IMAGE_NAME}"
-       }
-     }
-   }
+  def imageVersion = 'production'
+  def namespace = 'production'
+  def imageTag = "gcr.io/${project}/${appName}:${imageVersion}.${env.BUILD_NUMBER}"
+   // stage('Set Environment Variables') {
+   //   steps {
+   //     script {
+   //       echo "JOB_NAME = ${JOB_NAME}"
+   //       echo "BUILD_NUMBER = ${BUILD_NUMBER}"
+   //       echo "BUILD_URL = ${BUILD_URL}"
+   //       echo "GIT_URL = ${GIT_URL}"
+   //       echo "BRANCH_NAME = ${BRANCH_NAME}"
+   //
+   //       switch(BRANCH_NAME) {
+   //         case "production":
+   //           env.DOCKER_TAG = "prod"
+   //           env.PROJECT_ID = 'adidas-sre-311717'
+   //           env.CLUSTER_NAME = 'production'
+   //           break
+   //         case "staging":
+   //           env.DOCKER_TAG = "stg"
+   //           env.PROJECT_ID = 'adidas-sre-311717'
+   //           env.CLUSTER_NAME = 'staging'
+   //           break
+   //         default:
+   //           env.DOCKER_TAG = "dev"
+   //           env.PROJECT_ID = 'adidas-sre-311717'
+   //           env.CLUSTER_NAME = 'development'
+   //           break
+   //       }
+   //       env.NAMESPACE = "default"
+   //       env.DOCKER_IMAGE_NAME = "adidas-sre"
+   //       env.DOCKER_REGISTRY = "us.gcr.io/${PROJECT_ID}"
+   //
+   //       //Print environment variables
+   //       echo "DOCKER_TAG = ${DOCKER_TAG}"
+   //       echo "PROJECT_ID = ${PROJECT_ID}"
+   //       echo "CLUSTER_NAME = ${CLUSTER_NAME}"
+   //       echo "NAMESPACE = ${NAMESPACE}"
+   //       echo "DOCKER_REGISTRY = ${DOCKER_REGISTRY}"
+   //       echo "DOCKER_IMAGE_NAME = ${DOCKER_IMAGE_NAME}"
+   //     }
+   //   }
+   // }
 
   stage('Build Package') {
     steps {
