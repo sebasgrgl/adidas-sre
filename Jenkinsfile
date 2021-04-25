@@ -21,7 +21,7 @@ pipeline {
             case "production":
               env.DOCKER_TAG = "production"
               env.PROJECT_ID = 'adidas-sre-311717'
-              env.CLUSTER_NAME = 'production'
+              env.CLUSTER_NAME = 'prod'
               break
             case "production":
               env.DOCKER_TAG = "staging"
@@ -100,36 +100,4 @@ pipeline {
       }
     }
   }
-
-
-
-  //   stage('Make Container') {
-  //     steps {
-  //     sh "docker build -t snscaimito/ledger-service:${env.BUILD_ID} ."
-  //     sh "docker tag snscaimito/ledger-service:${env.BUILD_ID} snscaimito/ledger-service:latest"
-  //     }
-  //   }
-  //
-  //   stage('Check Specification') {
-  //     steps {
-  //       sh "chmod o+w *"
-  //       sh "docker-compose up --exit-code-from cucumber --build"
-  //     }
-  //   }
-  // }
-
-  // post {
-  //   always {
-  //     archive 'target/**/*.jar'
-  //     junit 'target/**/*.xml'
-  //     cucumber '**/*.json'
-  //   }
-  //   success {
-  //     withCredentials([usernamePassword(credentialsId: 'docker-credentials', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-  //       sh "docker login -u ${USERNAME} -p ${PASSWORD}"
-  //       sh "docker push snscaimito/ledger-service:${env.BUILD_ID}"
-  //       sh "docker push snscaimito/ledger-service:latest"
-  //     }
-  //   }
-  // }
 }
