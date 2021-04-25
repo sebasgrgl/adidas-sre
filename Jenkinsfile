@@ -51,13 +51,13 @@ node{
     sh '''
     echo "PATH = ${PATH}"
     echo "M3_HOME = ${M3_HOME}"
-    ''' 
+    '''
   }
-    stage('Build Package') {
-    sh("'${mvnHome}/bin/mvn' -B -DskipTests clean package -U")
+  stage('Build Package') {
+    sh("'/usr/local/bin/mvn' -B -DskipTests clean package -U")
   }
   stage('Test Package') {
-      sh("'${mvnHome}/bin/mvn' test")
+      sh("/usr/local/bin/mvn' test")
   }
   //Stage 1 : Build the docker imagetag.
   stage("Build Docker Image") {
