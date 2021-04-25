@@ -23,7 +23,7 @@ pipeline {
               env.PROJECT_ID = 'adidas-sre-311717'
               env.CLUSTER_NAME = 'prod'
               break
-            case "production":
+            case "staging":
               env.DOCKER_TAG = "staging"
               env.PROJECT_ID = 'adidas-sre-311717'
               env.CLUSTER_NAME = 'staging'
