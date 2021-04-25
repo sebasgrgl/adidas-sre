@@ -48,14 +48,10 @@ node{
    // }
 
   stage('Build Package') {
-    steps {
-      sh("mvn -B -DskipTests clean package -U")
-    }
+    sh("mvn -B -DskipTests clean package -U")
   }
   stage('Test Package') {
-    steps {
       sh("mvn test")
-    }
   }
   //Stage 1 : Build the docker imagetag.
   stage("Build Docker Image") {
