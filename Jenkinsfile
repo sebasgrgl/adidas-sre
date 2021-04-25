@@ -69,8 +69,34 @@ pipeline {
       steps {
         sh ("/usr/local/bin/docker-credential-gcr configure-docker")
         echo "DOCKER_TAG = ${DOCKER_TAG}"
-        sh("docker build -t ${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}:${DOCKER_TAG} .")
-        sh("docker push ${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}:${DOCKER_TAG}")
+        sh("docker build -t ${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}:${DOCKER_TAG}-${BUILD_NUMBER} .")
+        sh("docker push ${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}:${DOCKER_TAG}-${BUILD_NUMBER}")
+      }
+    }
+
+    stage("K8s Deploy") {
+      when {
+        anyOf {
+          branch 'production'
+          branch 'staging'
+          branch 'development'
+        }
+      }
+      steps {
+        script {
+          sh ("docker-credential-gcr configure-docker")
+          // set production image label
+          sh("docker tag ${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}:${DOCKER_TAG}-${BUILD_NUMBER} ${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}:${DOCKER_TAG}")
+          sh("docker push ${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}:${DOCKER_TAG}")
+
+          // Change context
+          sh ("gcloud container clusters get-credentials ${CLUSTER_NAME} --zone us-east1-d --project ${PROJECT_ID}")
+          sh ("kubectl config use-context ${CLUSTER_NAME}")
+
+          // change image
+          sh("")
+          sh ("kubectl set image --record deployment/${DOCKER_IMAGE_NAME} ${DOCKER_IMAGE_NAME}=${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}:${DOCKER_TAG}-${BUILD_NUMBER} --namespace ${NAMESPACE}")
+        }
       }
     }
   }
