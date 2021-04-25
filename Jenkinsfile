@@ -47,8 +47,13 @@ node{
    //     }
    //   }
    // }
-
-  stage('Build Package') {
+   stage ('Initialize') {
+    sh '''
+    echo "PATH = ${PATH}"
+    echo "M3_HOME = ${M3_HOME}"
+    ''' 
+  }
+    stage('Build Package') {
     sh("'${mvnHome}/bin/mvn' -B -DskipTests clean package -U")
   }
   stage('Test Package') {
