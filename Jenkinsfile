@@ -6,7 +6,7 @@ node{
   def imageVersion = 'production'
   def namespace = 'production'
   def imageTag = "gcr.io/${project}/${appName}:${imageVersion}.${env.BUILD_NUMBER}"
-  def mvn = tool 'M3'
+  def mvnHome = tool 'M3'
    // stage('Set Environment Variables') {
    //   steps {
    //     script {
@@ -49,10 +49,10 @@ node{
    // }
 
   stage('Build Package') {
-    sh("mvn -B -DskipTests clean package -U")
+    sh("'${mvnHome}/bin/mvn' -B -DskipTests clean package -U")
   }
   stage('Test Package') {
-      sh("mvn test")
+      sh("'${mvnHome}/bin/mvn' test")
   }
   //Stage 1 : Build the docker imagetag.
   stage("Build Docker Image") {
