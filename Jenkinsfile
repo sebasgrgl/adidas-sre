@@ -60,7 +60,7 @@ node{
     '''
   }
   stage('Build Package') {
-    sh("mvn clean package")
+    sh("mvn -Dmaven.test.failure.ignore clean package")
   }
   stage('Test Package') {
     sh("mvn test")
