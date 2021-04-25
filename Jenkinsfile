@@ -3,8 +3,8 @@ node{
   def project = 'adidas-sre-311717'
   def appName = 'adidas-sre'
   def serviceName = "${appName}-backend"
-  def imageVersion = 'production'
-  def namespace = 'production'
+  def imageVersion = 'development'
+  def namespace = 'development'
   def imageTag = "gcr.io/${project}/${appName}:${imageVersion}.${env.BUILD_NUMBER}"
   def mvn_version = tool 'maven'
   def jdk_version = tool 'jdk11'
@@ -60,57 +60,10 @@ node{
     '''
   }
   stage('Build Package') {
-    sh("mvn -Dmaven.test.failure.ignore clean package")
+    sh("mvn -B -DskipTests clean package")
   }
   stage('Test Package') {
     sh("mvn test")
   }
-  //Stage 1 : Build the docker imagetag.
-  stage("Build Docker Image") {
-    when {
-      anyOf {
-        branch 'production'
-        branch 'staging'
-        branch 'development'
-      }
-    }
-    steps {
-      sh ("docker-credential-gcr configure-docker")
-      echo "DOCKER_TAG = ${DOCKER_TAG}"
-      sh("docker build --build-arg JAR_PATH=\"`ls ./target/*.jar | grep -v sources | grep -v original`\" -t ${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}:${DOCKER_TAG}-${BUILD_NUMBER} .")
-      sh("docker push ${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}:${DOCKER_TAG}-${BUILD_NUMBER}")
-    }
-  }
 
-  // stage('Build image') {
-  //     // def customImage = docker.build("my-image:${imageTag}")
-	//   def dockerhome = tool 'docker'
-	//   sh("docker build -t ${imageTag} .")
-  // }
-
-  //Stage 2 : Push the image to docker registry
-  stage("K8s Deploy") {
-    when {
-      anyOf {
-        branch 'production'
-        branch 'staging'
-        branch 'development'
-      }
-    }
-    steps {
-      script {
-        sh ("docker-credential-gcr configure-docker")
-        // set production image label
-        sh("docker tag ${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}:${DOCKER_TAG}-${BUILD_NUMBER} ${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}:${DOCKER_TAG}")
-        sh("docker push ${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}:${DOCKER_TAG}")
-
-        // Change context
-        sh("kubectl config use-context ${CLUSTER_NAME}")
-
-        // change image
-        sh("")
-        sh ("kubectl set image --record deployment/${DOCKER_IMAGE_NAME} ${DOCKER_IMAGE_NAME}=${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}:${DOCKER_TAG}-${BUILD_NUMBER} --namespace ${NAMESPACE}")
-      }
-    }
-  }
 }
