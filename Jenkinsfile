@@ -60,21 +60,21 @@ pipeline {
     }
   }
 
-    // stage("Build Docker Image") {
-    //   when {
-    //     anyOf {
-    //       branch 'development'
-    //       branch 'staging'
-    //       branch 'production'
-    //     }
-    //   }
-    //   steps {
-    //     sh ("docker-credential-gcr configure-docker")
-    //     echo "DOCKER_TAG = ${DOCKER_TAG}"
-    //     sh("docker build --build-arg JAR_PATH=\"`ls ./target/*.jar | grep -v sources | grep -v original`\" -t ${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}:${DOCKER_TAG}-${BUILD_NUMBER} .")
-    //     sh("docker push ${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}:${DOCKER_TAG}-${BUILD_NUMBER}")
-    //   }
-    // }
+    stage("Build Docker Image") {
+      when {
+        anyOf {
+          branch 'development'
+          branch 'staging'
+          branch 'production'
+        }
+      }
+      steps {
+        sh ("/usr/local/bin/docker-credential-gcr configure-docker")
+        echo "DOCKER_TAG = ${DOCKER_TAG}"
+        sh("docker build -t ${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}:${DOCKER_TAG} .")
+        sh("docker push ${DOCKER_REGISTRY}/${DOCKER_IMAGE_NAME}:${DOCKER_TAG}")
+      }
+    }
 
   //   stage('Make Container') {
   //     steps {
