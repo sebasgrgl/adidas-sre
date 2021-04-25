@@ -4,9 +4,6 @@ node{
   def appName = 'adidas-sre'
   def serviceName = "${appName}-backend"
 
-  //Checkout Code from Git
-     checkout scm
-
    stage('Set Environment Variables') {
      steps {
        script {
