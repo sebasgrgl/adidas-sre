@@ -7,6 +7,7 @@ node{
   def namespace = 'production'
   def imageTag = "gcr.io/${project}/${appName}:${imageVersion}.${env.BUILD_NUMBER}"
   def mvn_version = 'M3'
+  def jdk_version = 'jdk11'
 
    // stage('Set Environment Variables') {
    //   steps {
@@ -51,15 +52,16 @@ node{
    stage ('Initialize') {
     sh '''
     echo "PATH = ${PATH}"
+    mvn --version
     '''
   }
   stage('Build Package') {
-    withEnv( ["PATH+MAVEN=${tool mvn_version}/bin"] ){
+    withEnv( ["PATH+MAVEN=${tool mvn_version}/bin","PATH+JDK=${tool jdk_version}/bin"] ){
       sh("mvn -B -DskipTests clean package -U")
     }
   }
   stage('Test Package') {
-    withEnv( ["PATH+MAVEN=${tool mvn_version}/bin"] ){
+    withEnv( ["PATH+MAVEN=${tool mvn_version}/bin","PATH+JDK=${tool jdk_version}/bin"] ){
       sh("mvn test")
     }
   }
