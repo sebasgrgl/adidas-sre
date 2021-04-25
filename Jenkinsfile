@@ -6,6 +6,7 @@ node{
   def imageVersion = 'production'
   def namespace = 'production'
   def imageTag = "gcr.io/${project}/${appName}:${imageVersion}.${env.BUILD_NUMBER}"
+  def mvn = tool 'M3'
    // stage('Set Environment Variables') {
    //   steps {
    //     script {
